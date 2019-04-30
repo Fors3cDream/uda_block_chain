@@ -1,6 +1,6 @@
-/**
- * Blockchain data structure
- */
+/* ===== Block Class ===================================
+|  Class with a constructor for block data model       |
+|  ====================================================*/
 
 
 class Block {

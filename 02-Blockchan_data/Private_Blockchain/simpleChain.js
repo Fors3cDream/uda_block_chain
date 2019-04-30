@@ -4,6 +4,18 @@ const Block = require('./Block')
 const db = require('level')('./chaindata')
 
 
+
+/* ===== Blockchain ===================================
+|  Class with a constructor for blockchain data model  |
+|  with functions to support:                          |
+|     - createGenesisBlock()                           |
+|     - getLatestBlock()                               |
+|     - addBlock()                                     |
+|     - getBlock()                                     |
+|     - validateBlock()                                |
+|     - validateChain()                                |
+|  ====================================================*/
+
 class Blockchain {
     constructor() {
         this.getBlockHeight().then((height)=>{
@@ -23,11 +35,11 @@ class Blockchain {
         if(newBlock.height > 0) {
             const prevBlock = await this.getBlock(height)
             newBlock.previousBlockHash = prevBlock.hash
-            console.log(`Previous Hash: ${newBlock.previousBlockHash}`)
+            console.log(`Previous Hash: 0x${newBlock.previousBlockHash}`)
         }
 
         newBlock.hash = SHA256(JSON.stringify(newBlock)).toString()
-        console.log(`New Hash: ${newBlock.hash}`)
+        console.log(`New Hash: 0x${newBlock.hash}`)
 
         await this.addBlockToDB(newBlock.height, JSON.stringify(newBlock))
     }
@@ -51,7 +63,7 @@ class Blockchain {
         if (blockHash == validBlockHash) {
             return true;
         } else {
-            console.log(`Block #${blockHeight} invalid hash: ${blockHash} <> ${validBlockHash}`);
+            console.log(`Block #${blockHeight} invalid hash: ${blockHash} <--> ${validBlockHash}`);
             return false;
         }
     }
@@ -130,16 +142,18 @@ class Blockchain {
     }
 }
 
-let blockchain = new Blockchain();
+// let blockchain = new Blockchain();
 
-(function theLoop (i) {
-    setTimeout(()=>{
-        blockchain.addBlock(new Block(`Test data ${i}`)).then(()=>{
-            if(--i) {
-                theLoop(i)
-            }
-        })
-    }, 100);
-})(10);
+// (function theLoop (i) {
+//     setTimeout(()=>{
+//         blockchain.addBlock(new Block(`Test data ${i}`)).then(()=>{
+//             if(--i) {
+//                 theLoop(i)
+//             }
+//         })
+//     }, 100);
+// })(10);
 
-setTimeout(() => blockchain.validateChain(), 2000)
+// setTimeout(() => blockchain.validateChain(), 2000)
+
+module.exports = Blockchain;
